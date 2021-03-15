@@ -12,7 +12,7 @@ import java.util.Set;
 @Entity
 public class Address {
     @Id
-    private String id;
+    private Long id;
     private BigDecimal longitude;
     private BigDecimal latitude;
     private String firstLine;
