@@ -13,7 +13,7 @@ import java.util.Set;
 @Entity
 public class Broker {
     @Id
-    private String id;
+    private Long id;
     private String name;
     private String surname;
     private String patronic;
