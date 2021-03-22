@@ -1,39 +1,60 @@
 package tomashchuk.realtor_project.service.client.impls;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import tomashchuk.realtor_project.dto.ClientResponse;
+import tomashchuk.realtor_project.dto.ClientRequest;
 import tomashchuk.realtor_project.entity.Client;
 import tomashchuk.realtor_project.repository.ClientRepository;
 import tomashchuk.realtor_project.service.client.interfaces.IClientService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
+@Service
 public class ClientService implements IClientService {
-    @Autowired
-    private ClientRepository clientRepository;
+    private final ClientRepository clientRepository;
+
     @Override
-    public List<Client> getAll() {
-        return clientRepository.findAll();
+    public List<ClientResponse> getAll() {
+        var clients = clientRepository.findAll();
+        return clients.stream().map(ClientResponse::mapToClientResponse).collect(Collectors.toList());
     }
 
     @Override
-    public Client getById(Long id) {
+    public ClientResponse getById(Long id) {
         Optional<Client> result = clientRepository.findById(id);
         if (result.isPresent()) {
-            return result.get();
+            return ClientResponse.mapToClientResponse(result.get());
         } else {
             return null;
         }
     }
 
     @Override
-    public Client create(Client client) {
-        return clientRepository.save(client);
+    public ClientResponse create(ClientRequest client) {
+        var newClient = Client.builder()
+                .id(new Random().nextLong())
+                .description(client.getDescription())
+                .name(client.getName())
+                .surname(client.getSurname())
+                .patronic(client.getPatronic())
+                .email(client.getEmail())
+                .number(client.getNumber())
+                .createdAt(client.getCreatedAt())
+                .birthday(client.getBirthday())
+                .build();
+
+        return ClientResponse.mapToClientResponse(clientRepository.save(newClient));
     }
 
     @Override
-    public Client update(Long id, Client client) {
-        return clientRepository.save(client);
+    public ClientResponse update(Long id, Client client) {
+        return ClientResponse.mapToClientResponse(clientRepository.save(client));
     }
 
     @Override

@@ -1,24 +1,14 @@
-package tomashchuk.realtor_project.entity;
+package tomashchuk.realtor_project.dto;
 
-
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
+import tomashchuk.realtor_project.entity.Realty;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import java.util.Date;
 import java.util.Set;
 
 @Data
-@Entity
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class Broker {
-    @Id
+public class BrokerRequest {
     private Long id;
     private String name;
     private String surname;
@@ -29,6 +19,5 @@ public class Broker {
     private Date birthday;
     private Date startedWork;
     private String position;
-    @OneToMany(mappedBy = "broker")
-    private Set<Realty> realties;
+//    private Set<Realty> realties;
 }

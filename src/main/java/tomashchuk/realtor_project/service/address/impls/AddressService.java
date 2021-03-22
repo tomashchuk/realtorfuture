@@ -1,39 +1,54 @@
 package tomashchuk.realtor_project.service.address.impls;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import tomashchuk.realtor_project.dto.AddressRequest;
+import tomashchuk.realtor_project.dto.AddressResponse;
 import tomashchuk.realtor_project.entity.Address;
 import tomashchuk.realtor_project.repository.AddressRepository;
 import tomashchuk.realtor_project.service.address.interfaces.IAddressService;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
+import java.util.stream.Collectors;
 
+@RequiredArgsConstructor
+@Service
 public class AddressService implements IAddressService {
-    @Autowired
-    private AddressRepository addressRepository;
+    private final AddressRepository addressRepository;
     @Override
-    public List<Address> getAll() {
-        return addressRepository.findAll();
+    public List<AddressResponse> getAll() {
+        var addresses = addressRepository.findAll();
+        return addresses.stream().map(AddressResponse::mapToAddressResponse).collect(Collectors.toList());
     }
 
     @Override
-    public Address getById(Long id) {
+    public AddressResponse getById(Long id) {
         Optional<Address> result = addressRepository.findById(id);
         if (result.isPresent()) {
-            return result.get();
+            return AddressResponse.mapToAddressResponse(result.get());
         } else {
             return null;
         }
     }
-
     @Override
-    public Address create(Address address) {
-        return addressRepository.save(address);
+    public AddressResponse create(AddressRequest address) {
+        var newAddress = Address.builder()
+                .id(new Random().nextLong())
+                .longitude(address.getLongitude())
+                .latitude(address.getLatitude())
+                .firstLine(address.getFirstLine())
+                .secondLine(address.getSecondLine())
+                .index(address.getIndex())
+                .build();
+
+        return AddressResponse.mapToAddressResponse(addressRepository.save(newAddress));
     }
 
     @Override
-    public Address update(Long id, Address address) {
-        return addressRepository.save(address);
+    public AddressResponse update(Long id, Address address) {
+        return AddressResponse.mapToAddressResponse(addressRepository.save(address));
     }
 
     @Override
