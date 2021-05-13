@@ -40,8 +40,8 @@ public class RealtyController {
         realtyService.delete(id);
     }
 
-//    @GetMapping("/{typeId}/realties")
-//    public List<Realty> getRoomsByType(@PathVariable Long typeId){
-//        return null;
-//    }
+    @GetMapping("/{typeId}/realties")
+    public List<Realty> getRoomsByType(@PathVariable Long typeId){
+        return null;
+    }
 }

@@ -5,7 +5,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tomashchuk.realtor_project.dto.ClientResponse;
 import tomashchuk.realtor_project.dto.ClientRequest;
+import tomashchuk.realtor_project.dto.TypeResponse;
 import tomashchuk.realtor_project.entity.Client;
+import tomashchuk.realtor_project.mapper.ClientMapper;
 import tomashchuk.realtor_project.repository.ClientRepository;
 import tomashchuk.realtor_project.service.client.interfaces.IClientService;
 
@@ -18,6 +20,7 @@ import java.util.stream.Collectors;
 @Service
 public class ClientService implements IClientService {
     private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     @Override
     public List<ClientResponse> getAll() {
@@ -31,23 +34,13 @@ public class ClientService implements IClientService {
         if (result.isPresent()) {
             return ClientResponse.mapToClientResponse(result.get());
         } else {
-            return null;
+            return ClientResponse.mapToClientResponse(result.orElseThrow());
         }
     }
 
     @Override
     public ClientResponse create(ClientRequest client) {
-        var newClient = Client.builder()
-                .id(new Random().nextLong())
-                .description(client.getDescription())
-                .name(client.getName())
-                .surname(client.getSurname())
-                .patronic(client.getPatronic())
-                .email(client.getEmail())
-                .number(client.getNumber())
-                .createdAt(client.getCreatedAt())
-                .birthday(client.getBirthday())
-                .build();
+        var newClient = clientMapper.fromRequest(client);
 
         return ClientResponse.mapToClientResponse(clientRepository.save(newClient));
     }

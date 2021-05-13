@@ -5,18 +5,20 @@ import org.springframework.stereotype.Service;
 import tomashchuk.realtor_project.dto.AddressRequest;
 import tomashchuk.realtor_project.dto.AddressResponse;
 import tomashchuk.realtor_project.entity.Address;
+import tomashchuk.realtor_project.mapper.AddressMapper;
 import tomashchuk.realtor_project.repository.AddressRepository;
 import tomashchuk.realtor_project.service.address.interfaces.IAddressService;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class AddressService implements IAddressService {
     private final AddressRepository addressRepository;
+    private final AddressMapper addressMapper;
+
     @Override
     public List<AddressResponse> getAll() {
         var addresses = addressRepository.findAll();
@@ -29,19 +31,12 @@ public class AddressService implements IAddressService {
         if (result.isPresent()) {
             return AddressResponse.mapToAddressResponse(result.get());
         } else {
-            return null;
+            return AddressResponse.mapToAddressResponse(result.orElseThrow());
         }
     }
     @Override
     public AddressResponse create(AddressRequest address) {
-        var newAddress = Address.builder()
-                .id(new Random().nextLong())
-                .longitude(address.getLongitude())
-                .latitude(address.getLatitude())
-                .firstLine(address.getFirstLine())
-                .secondLine(address.getSecondLine())
-                .index(address.getIndex())
-                .build();
+        var newAddress = addressMapper.fromRequest(address);
 
         return AddressResponse.mapToAddressResponse(addressRepository.save(newAddress));
     }

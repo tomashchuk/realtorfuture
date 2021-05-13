@@ -1,17 +1,13 @@
 package tomashchuk.realtor_project.service.realty.impls;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import tomashchuk.realtor_project.dto.RealtyRequest;
 import tomashchuk.realtor_project.dto.RealtyResponse;
-import tomashchuk.realtor_project.dto.TypeResponse;
 import tomashchuk.realtor_project.entity.Realty;
-import tomashchuk.realtor_project.entity.Type;
 import tomashchuk.realtor_project.repository.RealtyRepository;
 import tomashchuk.realtor_project.service.realty.interfaces.IRealtyService;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
@@ -40,7 +36,7 @@ public class RealtyService implements IRealtyService {
         if (result.isPresent()) {
             return RealtyResponse.mapToRealtyResponse(result.get());
         } else {
-            return null;
+            return RealtyResponse.mapToRealtyResponse(result.orElseThrow());
         }
     }
 
